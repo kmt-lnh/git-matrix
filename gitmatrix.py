@@ -1,113 +1,82 @@
+# -*- coding: utf-8 -*-
+
 # little pyton script, to schedule github commits, so the contribution
 # counter is showing a text message. Basically we want to map a list
 # of characters to a list of dates, so that each character yields a series of
 # dates, and if i commit on those dates, the commit squares will draw the
 # characters.
 
-# we'll need a file with the transcription of characters to a list of lists
-# (with zero and one for commint days) and also a way to draw the commit boxes
-# to test the file
-
-white_box = "□"
-black_box = "■"
-
-#print white_box
-#print black_box
-print " "
-seven = [white_box for i in xrange(0,7)]
-
-#for e in seven:
-#    print e
-
-# for easier printing we'll encode the letters column by column... :)
-# font is from here https://fontstruct.com/fontstructions/show/847768/5x7_dot_matrix
-# = [[],[],[],[],[]]
-chartable = {}
-chartable['A'] =[[0,0,1,1,1,1,1],[0,1,0,0,1,0,0],[1,0,0,0,1,0,0],[0,1,0,0,1,0,0],[0,0,1,1,1,1,1]]
-chartable['B'] =[[1,0,0,0,0,0,1],[1,1,1,1,1,1,1],[1,0,0,1,0,0,1],[1,0,0,1,0,0,1],[0,1,1,0,1,1,0]]
-chartable['C'] =[[0,1,1,1,1,1,0],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[0,1,0,0,0,1,0]]
-chartable['D'] =[[1,0,0,0,0,0,1],[1,1,1,1,1,1,1],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[0,1,1,1,1,1,0]]
-chartable['E'] =[[1,1,1,1,1,1,1],[1,0,0,1,0,0,1],[1,0,0,1,0,0,1],[1,0,0,1,0,0,1],[1,0,0,0,0,0,1]]
-chartable['F'] =[[1,1,1,1,1,1,1],[1,0,0,1,0,0,0],[1,0,0,1,0,0,0],[1,0,0,1,0,0,0],[1,0,0,0,0,0,0]]
-chartable['G'] =[[0,1,1,1,1,1,0],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[1,0,0,1,0,0,1],[0,1,0,1,1,1,1]]
-chartable['H'] =[[1,1,1,1,1,1,1],[0,0,0,1,0,0,0],[0,0,0,1,0,0,0],[0,0,0,1,0,0,0],[1,1,1,1,1,1,1]]
-chartable['I'] =[[1,0,0,0,0,0,1],[1,1,1,1,1,1,1],[1,0,0,0,0,0,1]]
-chartable['J'] =[[0,0,0,0,0,1,0],[0,0,0,0,0,0,1],[1,0,0,0,0,0,1],[1,1,1,1,1,1,0],[1,0,0,0,0,0,0]]
-chartable['K'] =[[1,1,1,1,1,1,1],[0,0,0,1,0,0,0],[0,0,1,0,1,0,0],[0,1,0,0,0,1,0],[1,0,0,0,0,0,1]]
-chartable['L'] =[[1,1,1,1,1,1,1],[0,0,0,0,0,0,1],[0,0,0,0,0,0,1],[0,0,0,0,0,0,1],[0,0,0,0,0,0,1]]
-chartable['M'] =[[1,1,1,1,1,1,1],[0,1,0,0,0,0,0],[0,0,1,1,0,0,0],[0,1,0,0,0,0,0],[1,1,1,1,1,1,1]]
-chartable['N'] =[[1,1,1,1,1,1,1],[0,0,1,0,0,0,0],[0,0,0,1,0,0,0],[0,0,0,0,1,0,0],[1,1,1,1,1,1,1]] 
-chartable['O'] =[[0,1,1,1,1,1,0],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[1,0,0,0,0,0,1],[0,1,1,1,1,1,0]]
-chartable['P'] =[[1,1,1,1,1,1,1],[1,0,0,1,0,0,0],[1,0,0,1,0,0,0],[1,0,0,1,0,0,0],[0,1,1,0,0,0,0]]
-chartable['Q'] =[[0,1,1,1,1,1,0],[1,0,0,0,0,0,1],[1,0,0,0,1,0,1],[1,0,0,0,0,1,0],[0,1,1,1,1,0,1]]
-chartable['R'] =[[1,1,1,1,1,1,1],[1,0,0,1,0,0,0],[1,0,0,1,1,0,0],[1,0,0,1,0,1,0],[0,1,1,0,0,0,1]]
-chartable['S'] =[[0,1,1,0,0,1,0],[1,0,0,1,0,0,1],[1,0,0,1,0,0,1],[1,0,0,1,0,0,1],[0,1,0,0,1,1,0]]
-chartable['T'] =[[1,0,0,0,0,0,0],[1,0,0,0,0,0,0],[1,1,1,1,1,1,1],[1,0,0,0,0,0,0],[1,0,0,0,0,0,0]]
-chartable['U'] =[[1,1,1,1,1,1,0],[0,0,0,0,0,0,1],[0,0,0,0,0,0,1],[0,0,0,0,0,0,1],[1,1,1,1,1,1,0]]
-chartable['V'] =[[1,1,1,1,1,0,0],[0,0,0,0,0,1,0],[0,0,0,0,0,0,1],[0,0,0,0,0,1,0],[1,1,1,1,1,0,0]]
-chartable['W'] =[[1,1,1,1,1,1,0],[0,0,0,0,0,0,1],[0,0,0,1,1,1,0],[0,0,0,0,0,0,1],[1,1,1,1,1,1,0]]
-chartable['X'] =[[1,1,0,0,0,1,1],[0,0,1,0,1,0,0],[0,0,0,1,0,0,0],[0,0,1,0,1,0,0],[1,1,0,0,0,1,1]]
-chartable['Y'] =[[1,1,1,0,0,0,0],[0,0,0,1,0,0,0],[0,0,0,0,1,1,1],[0,0,0,1,0,0,0],[1,1,1,0,0,0,0]]
-chartable['Z'] =[[1,0,0,0,0,1,1],[1,0,0,0,1,0,1],[1,0,0,1,0,0,1],[1,0,1,0,0,0,1],[1,1,0,0,0,0,1]]
-"""
-"""
-chartable['a'] =[[0,0,0,0,0,1,0],[0,0,1,0,1,0,1],[0,0,1,0,1,0,1],[0,0,1,0,1,0,1],[0,0,0,1,1,1,1]]
-"""
-b
-c
-d
-e
-f
-g
-h
-i
-j
-k
-l
-m
-n
-o
-p
-q
-r
-s
-t
-u
-v
-w
-x
-y
-z
-"""
-space = [[0,0,0,0,0,0,0]]
-
-
-#print len(A + a)
-#As = H + space + I + space + space + space + U + space + L + space + A
-#printChar(As)
-
-def stringToCharDefList(string,chrTable):
-    result = []
-    for c in list(string):
-        result = result + chrTable[c] + space
-    return result
+import letters
+from itertools import chain
+from datetime import date,timedelta
 
 # for testing the display
 def boxSub(num):
     if num == 0:
         return " "
     else:
-        return "■"
+        return "@"
+
+def stringToCharDefList(string,chrTable):
+    result = []
+    for c in list(string):
+        result = result + chrTable[c] + chrTable[' ']
+    return result
+
+def stringToCharDefList2(string,chrTable):
+    result = []
+    strlist = list(string)
+    for e,c in enumerate(strlist):
+        if e+1 < len(strlist) and (strlist[e+1] == "l" or strlist[e+1] == " ") :
+            result = result + chrTable[c]
+        else:
+            result = result + chrTable[c] + chrTable[' ']
+    return result
+
 
 
 # a chardef is simply [[x]] holding ones and zeroes
+# must return a collection of rows for printing, or
+# one gigantic string with newlines
 def printChar(chardef):
     heigth = len(chardef[0])
     for row in xrange(0,heigth):
         charrow = ''.join([boxSub(x[row]) for x in chardef])
         print charrow
 
+# printChar(stringToCharDefList2("Hello World!",chartable))
 
 
-print ""
-printChar(stringToCharDefList("FOO",chartable))
+# points = list(chain(*stringToCharDefList2("Hello World!",chartable)))
+
+# has to start on sunday
+# today = date.today()
+# startDate = date(2017,6,25) # this is an incoming arg from the cmdline
+# datelist = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
+# format string is: date.strftime("%Y-%m-%d")
+
+grab = lambda x,y: y if x == 1 else []
+
+# for e in filter(lambda x: x != [],map(grab,points,datelist)):
+#     print e
+
+
+
+
+# this is no good - i want to test the printchar function!
+def printChar2(chardef):
+    heigth = len(chardef[0])
+    retString = ""
+    for row in xrange(0,heigth):
+        charrow = ''.join([boxSub(x[row]) for x in chardef])
+        retString = retString + '\n' + charrow
+    return retString
+
+#print list(testString)
+#print list(testChar(stringToCharDefList2("Hello World!",chartable)))
+
+# print testString
+# print testChar(stringToCharDefList2("Hello World!",chartable))
+# print testChar(stringToCharDefList2("M x butterfly",chartable))
+
+# print testString == testChar(stringToCharDefList2("Hello World!",chartable))
