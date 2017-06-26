@@ -6,6 +6,7 @@
 # dates, and if i commit on those dates, the commit squares will draw the
 # characters.
 
+import sys
 import letters
 from itertools import chain
 from datetime import date,timedelta
@@ -23,6 +24,8 @@ def stringToCharDefList(string,chrTable):
         result = result + chrTable[c] + chrTable[' ']
     return result
 
+# the extra logic in the ifs is just for a bit of "kerning", so that
+# we fit into github's 7x52 screen
 def stringToCharDefList2(string,chrTable):
     result = []
     strlist = list(string)
@@ -44,26 +47,15 @@ def printChar(chardef):
         charrow = ''.join([boxSub(x[row]) for x in chardef])
         print charrow
 
-# printChar(stringToCharDefList2("Hello World!",chartable))
 
-
-# points = list(chain(*stringToCharDefList2("Hello World!",chartable)))
-
-# has to start on sunday
-# today = date.today()
-# startDate = date(2017,6,25) # this is an incoming arg from the cmdline
-# datelist = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
-# format string is: date.strftime("%Y-%m-%d")
 
 grab = lambda x,y: y if x == 1 else []
 
-# for e in filter(lambda x: x != [],map(grab,points,datelist)):
-#     print e
+def messageToDates(message,startDate,chartable):
+    points = list(chain(*stringToCharDefList2("Hello World!",chartable)))
+    datelist = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
+    return datelist
 
-
-
-
-# this is no good - i want to test the printchar function!
 def printChar2(chardef):
     heigth = len(chardef[0])
     retString = ""
@@ -72,11 +64,24 @@ def printChar2(chardef):
         retString = retString + '\n' + charrow
     return retString
 
-#print list(testString)
-#print list(testChar(stringToCharDefList2("Hello World!",chartable)))
 
-# print testString
-# print testChar(stringToCharDefList2("Hello World!",chartable))
-# print testChar(stringToCharDefList2("M x butterfly",chartable))
-
-# print testString == testChar(stringToCharDefList2("Hello World!",chartable))
+if __name__ == "__main__":
+    try:
+        YMD = map(int,sys.argv[1].split("-"))
+        message = sys.argv[2]
+        startDate = date(YMD[0],YMD[1],YMD[2])
+        datelist = messageToDates(message,startDate,letters.chartable)
+        print 'Org headlines for "%s" starting on %s' % (message,sys.argv[1])
+        print ""
+        print "The message will look like this:"
+        print printChar2(stringToCharDefList2(message,letters.chartable))
+        print ""
+        print '* org tree for message "%smessage"' % message
+        for e in datelist:
+            print "** TODO <%s>" % e.strftime("%Y-%m-%d")
+            print "    SCHEDULED: <%s>" % e.strftime("%Y-%m-%d")
+    except:
+        print 'usage: gitmatrix.py "date" "message"'
+        print 'Date should be in "yyyy-mm-dd" format'
+        print 'Also, right now the only way to guarantee correct printing is'
+        print 'to start on a Sunday. Later this will be amended.'
