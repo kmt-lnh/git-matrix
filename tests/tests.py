@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# run tests here with "$ python -m unittest tests"
+# run tests here with "$ python -m unittest -v tests.tests"
 
 import unittest
-from letters import *
-from dotmatrix import *
 
+from letters import *
+from gitmatrix import *
+from datetime import date,timedelta
 
 class TestDotMatrix(unittest.TestCase):
 

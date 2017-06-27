@@ -52,9 +52,10 @@ def printChar(chardef):
 grab = lambda x,y: y if x == 1 else []
 
 def messageToDates(message,startDate,chartable):
-    points = list(chain(*stringToCharDefList2("Hello World!",chartable)))
-    datelist = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
-    return datelist
+    points       = list(chain(*stringToCharDefList2("Hello World!",chartable)))
+    datelist     = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
+    filteredList = [e for e in filter(lambda x: x != [],map(grab,points,datelist))]
+    return filteredList
 
 def printChar2(chardef):
     heigth = len(chardef[0])
