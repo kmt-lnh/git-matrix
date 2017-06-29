@@ -77,10 +77,10 @@ if __name__ == "__main__":
         print "The message will look like this:"
         print printChar2(stringToCharDefList2(message,letters.chartable))
         print ""
-        print '* org tree for message "%smessage"' % message
+        print '* org tree for message "%s"' % message
         for e in datelist:
-            print "** TODO <%s>" % e.strftime("%Y-%m-%d")
-            print "    SCHEDULED: <%s>" % e.strftime("%Y-%m-%d")
+            print "** TODO commit on %s" % e.strftime("%Y-%m-%d")
+            print "    SCHEDULED: <%s 11:00>" % e.strftime("%Y-%m-%d")
     except:
         print 'usage: gitmatrix.py "date" "message"'
         print 'Date should be in "yyyy-mm-dd" format'
