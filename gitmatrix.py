@@ -11,22 +11,35 @@ import letters
 from itertools import chain
 from datetime import date,timedelta
 
-# for testing the display
-def boxSub(num):
+
+def charToDisplay(num):
+    """
+    Auxiliary function to test the dotmatrix message to be printed.
+    '@' is used as it fills out the space the most.
+    """
     if num == 0:
         return " "
     else:
         return "@"
 
 def stringToCharDefList(string,chrTable):
+    """
+    Generic routine to turn a string into a list of columns (also lists)
+    that together draw a the string in question. The size of the matrix
+    is deteremined by the character definitions in chrTable.
+    """
     result = []
     for c in list(string):
         result = result + chrTable[c] + chrTable[' ']
     return result
 
-# the extra logic in the ifs is just for a bit of "kerning", so that
-# we fit into github's 7x52 screen
-def stringToCharDefList2(string,chrTable):
+def stringToCharDefListKerning(string,chrTable):
+    """
+    Github specific routine to turn a string into a list of columns (also lists)
+    that together draw a the string in question. The size of the matrix is 
+    deteremined by the character definitions in chrTable. There are extra rules
+    to save space, so that more characters fit into a smaller space.
+    """
     result = []
     strlist = list(string)
     for e,c in enumerate(strlist):
@@ -36,32 +49,30 @@ def stringToCharDefList2(string,chrTable):
             result = result + chrTable[c] + chrTable[' ']
     return result
 
-
-
-# a chardef is simply [[x]] holding ones and zeroes
-# must return a collection of rows for printing, or
-# one gigantic string with newlines
-def printChar(chardef):
-    heigth = len(chardef[0])
-    for row in xrange(0,heigth):
-        charrow = ''.join([boxSub(x[row]) for x in chardef])
-        print charrow
-
-
-
-grab = lambda x,y: y if x == 1 else []
+# just a combinator to puncture one list with an other
+puncture = lambda x,y: y if x == 1 else []
 
 def messageToDates(message,startDate,chartable):
-    points       = list(chain(*stringToCharDefList2("Hello World!",chartable)))
+    """
+    Given a message to print and a start date, this function returns a 
+    flat list of dates when there should be counted github activity, so
+    that the activity chart displays the expected message. One list is used
+    to "puncture" an other.
+    """
+    points       = list(chain(*stringToCharDefListKerning("Hello World!",chartable)))
     datelist     = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
-    filteredList = [e for e in filter(lambda x: x != [],map(grab,points,datelist))]
+    filteredList = [e for e in filter(lambda x: x != [],map(puncture,points,datelist))]
     return filteredList
 
-def printChar2(chardef):
+def chardefToASCIIArt(chardef):
+    """
+    Given a character definition list, this function returns a string
+    holding an ASCII art showing the resulting collection of pixels.
+    """
     heigth = len(chardef[0])
     retString = ""
     for row in xrange(0,heigth):
-        charrow = ''.join([boxSub(x[row]) for x in chardef])
+        charrow = ''.join([charToDisplay(x[row]) for x in chardef])
         retString = retString + '\n' + charrow
     return retString
 
@@ -75,7 +86,7 @@ if __name__ == "__main__":
         print 'Org headlines for "%s" starting on %s' % (message,sys.argv[1])
         print ""
         print "The message will look like this:"
-        print printChar2(stringToCharDefList2(message,letters.chartable))
+        print chardefToASCIIArt(stringToCharDefListKerning(message,letters.chartable))
         print ""
         print '* org tree for message "%s"' % message
         for e in datelist:

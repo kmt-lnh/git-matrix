@@ -21,7 +21,6 @@ $ python -m unittest tests
 
    - More (and less trivial) tests
    - Smart starting pixel (ie.: checking if start date is reasonable)
-   - Docstrings for functions
    - proper license?
 
 ## License

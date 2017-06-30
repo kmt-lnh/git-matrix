@@ -20,16 +20,22 @@ class TestDotMatrix(unittest.TestCase):
                      "@  @ @    @  @  @  @  @ @ @ @  @ @    @  @   @   \n" + \
                      "@  @  @@ @@@@@@  @@    @ @   @@  @   @@@  @@@@ @ " 
         
-        compStr = printChar2(stringToCharDefList2("Hello World!",chartable))
+        compStr = chardefToASCIIArt(stringToCharDefListKerning("Hello World!",chartable))
         self.assertEqual(testString,compStr)
 
     def test_filteredDates(self):
         testMessage = "Hello World!"
         startDate = date(2017,06,25)
-        points = list(chain(*stringToCharDefList2(testMessage,chartable)))
+        points = list(chain(*stringToCharDefListKerning(testMessage,chartable)))
         datelist = [startDate + timedelta(days=x) for x in xrange(0,len(points))]
         listToPrint = messageToDates(testMessage,startDate,chartable)
         self.assertNotEqual(len(datelist),len(listToPrint))
+
+    def test_charToDisplayNeg(self):
+        self.assertEqual(charToDisplay(0),' ')
+
+    def test_charToDisplayPos(self):
+        self.assertEqual(charToDisplay(1),'@')
         
 if __name__ == '__main__':
     unittest.main()
